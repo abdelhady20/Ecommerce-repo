@@ -31,6 +31,11 @@ class RegisterController extends Controller
 
         session(['user_id' => $user->id]);
 
-        return redirect('/dashboard');
+        $redirectUrl = session('redirect_after_login', route('main-home'));
+        session()->forget('redirect_after_login');
+
+        return redirect($redirectUrl);
+
+
     }
 }

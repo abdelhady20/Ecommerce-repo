@@ -5,8 +5,10 @@
 @section('content')
     <div class="container checkout-section mx-auto">
         <div class="checkout-title">Checkout</div>
+
         <form action="{{ route('shop.checkout.store') }}" method="POST">
             @csrf
+
             @if ($errors->has('stripe'))
                 <div class="alert alert-danger">
                     {{ $errors->first('stripe') }}
@@ -49,7 +51,7 @@
                             @error('postal_code') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label">Full Address *</label>
+                            <label class="form-label">Full Shiping Address *</label>
                             <textarea name="address" class="form-control" rows="2" required>{{ old('address') }}</textarea>
                             @error('address') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
@@ -79,20 +81,26 @@
                     <div class="order-summary">
                         <div class="order-summary-title">Order Summary</div>
 
-                        @forelse(Cart::content() as $item)
+                        @forelse($cartItems as $item)
                             <div class="order-summary-row">
-                            <span>
-                                {{ $item->name }} x{{ $item->qty }}
-                            </span>
-                                <span>${{ number_format($item->price * $item->qty, 2) }}</span>
+                                <span>{{ $item['name'] }} x{{ $item['quantity'] }}</span>
+                                <span>${{ number_format($item['unit_price'] * $item['quantity'], 2) }}</span>
                             </div>
                         @empty
                             <p>No items in your cart.</p>
                         @endforelse
 
-                        <div class="order-summary-row"><span>Subtotal</span><span>${{ number_format($cartSummary['subtotal'], 2) }}</span></div>
-                        <div class="order-summary-row"><span>Tax</span><span>${{ number_format($cartSummary['tax'], 2) }}</span></div>
-                        <div class="order-summary-total">Total: <span>${{ number_format($cartSummary['total'], 2) }}</span></div>
+                        <div class="order-summary-row">
+                            <span>Subtotal</span>
+                            <span>${{ number_format($cartSummary['subtotal'], 2) }}</span>
+                        </div>
+                        <div class="order-summary-row">
+                            <span>Tax</span>
+                            <span>${{ number_format($cartSummary['tax'], 2) }}</span>
+                        </div>
+                        <div class="order-summary-total">
+                            Total: <span>${{ number_format($cartSummary['total'], 2) }}</span>
+                        </div>
 
                         <button type="submit" class="btn mt-3">Place Order</button>
                     </div>
@@ -100,38 +108,5 @@
             </div>
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 @endsection
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Live calculation for shipping and total
-    const shippingRadios = document.querySelectorAll('input[name="shippingMethod"]');
-    const subtotal = 139.97;
-    function updateSummary() {
-        let shipping = 5;
-        for (const radio of shippingRadios) {
-            if (radio.checked) shipping = parseFloat(radio.value);
-        }
-        document.getElementById('shippingCost').textContent = `$${shipping.toFixed(2)}`;
-        document.getElementById('total').textContent = `$${(subtotal + shipping).toFixed(2)}`;
-    }
-    shippingRadios.forEach(r => r.addEventListener('change', updateSummary));
-    document.addEventListener('DOMContentLoaded', function() {
-        updateSummary();
-    });
-    // Handle checkout form
-    const checkoutForm = document.getElementById('checkoutForm');
-    checkoutForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const payCard = document.getElementById('payCard').checked;
-        if (payCard) {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            setTimeout(function() {
-                window.location.href = 'https://checkout.stripe.com/pay/test';
-            }, 1500);
-        } else {
-            alert('Order placed! You chose Cash on Delivery.');
-            window.location.href = 'ecommerce-home.html';
-        }
-    });
-</script>

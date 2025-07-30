@@ -52,7 +52,7 @@ class CheckoutController extends Controller
 
             try {
                 $order = Order::create([
-                    'user_id'        => 1,
+                    'user_id'        => session('user_id'),
                     'status'         => 'pending',
                     'total'          => $cartSummary['total'],
                     'payment_method' => 'cod',
@@ -81,7 +81,7 @@ class CheckoutController extends Controller
 
 
         session()->put('stripe_checkout', [
-            'user_id' => 1,
+            'user_id' => session('user_id'),
             'total'   => $cartSummary['total'],
             'items'   => $cartItems,
             'data'    => $data,

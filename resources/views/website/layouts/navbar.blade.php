@@ -12,10 +12,10 @@
               class="d-none d-lg-flex mx-4 flex-grow-1 align-items-center"
               style="max-width: 500px;">
             <div class="input-group" style="height: 40px;">
-        <span class="input-group-text bg-light border-0"
-              style="border-radius: 50px 0 0 50px; padding: 0 12px; height: 100%;">
-            <i class="fa fa-search text-muted" style="font-size: 0.9rem;"></i>
-        </span>
+                <span class="input-group-text bg-light border-0"
+                      style="border-radius: 50px 0 0 50px; padding: 0 12px; height: 100%;">
+                    <i class="fa fa-search text-muted" style="font-size: 0.9rem;"></i>
+                </span>
                 <input
                     class="form-control border-0"
                     style="border-radius: 0 50px 50px 0; font-size: 0.95rem; height: 100%;"
@@ -27,9 +27,10 @@
             </div>
         </form>
 
-
         {{-- Icons --}}
-        <div class="navbar-icons ms-auto d-flex align-items-center gap-3">
+        <div class="navbar-icons ms-auto d-flex align-items-center" style="gap: 1.8rem;">
+
+            {{-- Cart --}}
             <a href="{{ route('cart.index') }}" class="position-relative">
                 <i class="fa fa-shopping-cart fs-5"></i>
                 @if($cartCount > 0)
@@ -39,6 +40,7 @@
                 @endif
             </a>
 
+            {{-- Wishlist --}}
             <a href="{{ route('wishlist.index') }}" class="position-relative">
                 <i class="fa fa-heart fs-5"></i>
                 @if($wishlistCount > 0)
@@ -47,6 +49,41 @@
                     </span>
                 @endif
             </a>
+
+            {{-- User --}}
+            @php
+                use App\Models\User;
+                $currentUser = null;
+                if(session()->has('user_id')) {
+                    $currentUser = User::find(session('user_id'));
+                }
+            @endphp
+
+            @if($currentUser)
+                {{-- Logged in user dropdown --}}
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-1" href="#" id="userMenu" role="button" data-bs-toggle="dropdown">
+                        <i class="fa fa-user fs-5"></i>
+                        <span>{{ $currentUser->name }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                        <li><a class="dropdown-item" href="#">Account</a></li>
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST" class="m-0">
+                                @csrf
+                                <button class="dropdown-item" type="submit">Log out</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            @else
+                {{-- Guest user --}}
+                <a href="{{ route('login.form') }}" class="d-flex align-items-center gap-1">
+                    <i class="fa fa-user fs-5"></i>
+                    <span>Log in</span>
+                </a>
+            @endif
+
         </div>
 
         {{-- Mobile Toggle --}}

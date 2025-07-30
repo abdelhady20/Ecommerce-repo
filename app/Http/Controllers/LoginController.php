@@ -28,6 +28,19 @@ class LoginController extends Controller
 
         session(['user_id' => $user->id]);
 
-        return redirect('/dashboard');
+        $redirectUrl = session('redirect_after_login', route('main-home'));
+        $formData = session('checkout_form_data');
+
+        session()->forget(['redirect_after_login', 'checkout_form_data']);
+
+        if ($formData && str_contains($redirectUrl, 'checkout')) {
+            return redirect($redirectUrl)->withInput($formData);
+        }
+
+        return redirect($redirectUrl);
+
+
+
+
     }
 }

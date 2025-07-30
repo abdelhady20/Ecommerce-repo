@@ -33,20 +33,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//Route::get('/register', [RegisterController::class, 'showForm'])->name('register.form');
-//Route::post('/register', [RegisterController::class, 'register'])->name('register');
-//
-//Route::get('/login', [LoginController::class, 'showForm'])->name('login.form');
-//Route::post('/login', [LoginController::class, 'login'])->name('login');
-//
-//Route::post('/logout', function () {
-//    session()->forget('user_id');
-//    return redirect('/login');
-//})->name('logout');
-//
-//Route::get('/dashboard', function () {
-//    return view('dashboard');
-//})->middleware('auth.check');
+Route::get('/register', [RegisterController::class, 'showForm'])->name('register.form');
+Route::post('/register', [RegisterController::class, 'register'])->name('register');
+
+Route::get('/login', [LoginController::class, 'showForm'])->name('login.form');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+
+Route::post('/logout', function () {
+    session()->forget('user_id');
+    return redirect('/login');
+})->name('logout');
+
+Route::get('/auth/checkout', function () {
+    return view('website.checkout');
+})->middleware('auth.check');
 
 
 
@@ -153,12 +153,13 @@ Route::prefix('wishlist')->name('wishlist.')->group(function () {
 });
 
 // Checkout Routes
-Route::prefix('shop')->name('shop.')->group(function () {
+Route::prefix('shop')->name('shop.')->middleware('auth.check')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::post('/checkout/apply-coupon', [WebsiteCouponController::class, 'apply'])->name('coupon.apply');
     Route::post('/coupon/remove', [WebsiteCouponController::class, 'remove'])->name('coupon.remove');
 });
+
 
 //payment routes
 Route::prefix('shop')->name('shop.')->group(function () {
