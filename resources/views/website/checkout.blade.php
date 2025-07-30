@@ -1,0 +1,137 @@
+@extends('website.layouts.app')
+
+@section('title', 'Checkout')
+
+@section('content')
+    <div class="container checkout-section mx-auto">
+        <div class="checkout-title">Checkout</div>
+        <form action="{{ route('shop.checkout.store') }}" method="POST">
+            @csrf
+            @if ($errors->has('stripe'))
+                <div class="alert alert-danger">
+                    {{ $errors->first('stripe') }}
+                </div>
+            @endif
+
+            <div class="row">
+                {{-- Shipping Address --}}
+                <div class="col-lg-7">
+                    <div class="section-title">Shipping Address</div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" name="first_name" class="form-control" value="{{ old('first_name') }}" required>
+                            @error('first_name') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name *</label>
+                            <input type="text" name="last_name" class="form-control" value="{{ old('last_name') }}" required>
+                            @error('last_name') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email *</label>
+                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                            @error('email') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone *</label>
+                            <input type="text" name="phone" class="form-control" value="{{ old('phone') }}" required>
+                            @error('phone') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">City *</label>
+                            <input type="text" name="city" class="form-control" value="{{ old('city') }}" required>
+                            @error('city') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Postal Code *</label>
+                            <input type="text" name="postal_code" class="form-control" value="{{ old('postal_code') }}" required>
+                            @error('postal_code') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Full Address *</label>
+                            <textarea name="address" class="form-control" rows="2" required>{{ old('address') }}</textarea>
+                            @error('address') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Notes (Optional)</label>
+                            <textarea name="notes" class="form-control" rows="2">{{ old('notes') }}</textarea>
+                        </div>
+                    </div>
+
+                    {{-- Payment Method --}}
+                    <div class="section-title mt-4">Payment Method</div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="payment_method" id="payStripe" value="stripe" required>
+                        <label class="form-check-label" for="payStripe">Credit Card (via Stripe)</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="payment_method" id="payCOD" value="cod" required>
+                        <label class="form-check-label" for="payCOD">Cash on Delivery</label>
+                    </div>
+                    @error('payment_method')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                {{-- Order Summary --}}
+                <div class="col-lg-5">
+                    <div class="order-summary">
+                        <div class="order-summary-title">Order Summary</div>
+
+                        @forelse(Cart::content() as $item)
+                            <div class="order-summary-row">
+                            <span>
+                                {{ $item->name }} x{{ $item->qty }}
+                            </span>
+                                <span>${{ number_format($item->price * $item->qty, 2) }}</span>
+                            </div>
+                        @empty
+                            <p>No items in your cart.</p>
+                        @endforelse
+
+                        <div class="order-summary-row"><span>Subtotal</span><span>${{ number_format($cartSummary['subtotal'], 2) }}</span></div>
+                        <div class="order-summary-row"><span>Tax</span><span>${{ number_format($cartSummary['tax'], 2) }}</span></div>
+                        <div class="order-summary-total">Total: <span>${{ number_format($cartSummary['total'], 2) }}</span></div>
+
+                        <button type="submit" class="btn mt-3">Place Order</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+@endsection
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Live calculation for shipping and total
+    const shippingRadios = document.querySelectorAll('input[name="shippingMethod"]');
+    const subtotal = 139.97;
+    function updateSummary() {
+        let shipping = 5;
+        for (const radio of shippingRadios) {
+            if (radio.checked) shipping = parseFloat(radio.value);
+        }
+        document.getElementById('shippingCost').textContent = `$${shipping.toFixed(2)}`;
+        document.getElementById('total').textContent = `$${(subtotal + shipping).toFixed(2)}`;
+    }
+    shippingRadios.forEach(r => r.addEventListener('change', updateSummary));
+    document.addEventListener('DOMContentLoaded', function() {
+        updateSummary();
+    });
+    // Handle checkout form
+    const checkoutForm = document.getElementById('checkoutForm');
+    checkoutForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const payCard = document.getElementById('payCard').checked;
+        if (payCard) {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            setTimeout(function() {
+                window.location.href = 'https://checkout.stripe.com/pay/test';
+            }, 1500);
+        } else {
+            alert('Order placed! You chose Cash on Delivery.');
+            window.location.href = 'ecommerce-home.html';
+        }
+    });
+</script>

@@ -1,0 +1,93 @@
+<?php
+
+namespace App\Http\Controllers\Website;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckoutRequest;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Repositories\CartRepositoryInterface;
+use Illuminate\Support\Facades\DB;
+
+class CheckoutController extends Controller
+{
+    protected CartRepositoryInterface $cartRepo;
+
+    public function __construct(CartRepositoryInterface $cartRepo)
+    {
+        $this->cartRepo = $cartRepo;
+    }
+
+    public function index()
+    {
+        $cart = $this->cartRepo->all();
+
+        $cartItems = $cart['items'] ?? [];
+        $cartSummary = $cart['summary'] ?? [
+            'subtotal' => 0,
+            'tax' => 0,
+            'discount' => 0,
+            'total' => 0,
+        ];
+
+        return view('website.checkout', compact('cartItems', 'cartSummary'));
+    }
+
+    public function store(CheckoutRequest $request)
+    {
+        $data = $request->validated();
+
+
+        $cart = $this->cartRepo->all();
+        $cartItems = $cart['items'] ?? [];
+        $cartSummary = $cart['summary'] ?? [
+            'subtotal' => 0,
+            'tax' => 0,
+            'discount' => 0,
+            'total' => 0,
+        ];
+
+        if ($data['payment_method'] === 'cod') {
+            DB::beginTransaction();
+
+            try {
+                $order = Order::create([
+                    'user_id'        => 1,
+                    'status'         => 'pending',
+                    'total'          => $cartSummary['total'],
+                    'payment_method' => 'cod',
+                    'payment_status' => 'unpaid',
+                ]);
+
+                foreach ($cartItems as $item) {
+                    OrderItem::create([
+                        'order_id'   => $order->id,
+                        'product_id' => $item['product_id'],
+                        'quantity'   => $item['quantity'],
+                        'price'      => $item['unit_price'],
+                    ]);
+                }
+
+                DB::commit();
+                $this->cartRepo->clear();
+
+                return redirect()->route('shop.thankyou')->with('success', 'Order placed successfully.');
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->withErrors(['checkout' => 'Error: ' . $e->getMessage()]);
+            }
+        }
+
+
+        session()->put('stripe_checkout', [
+            'user_id' => 1,
+            'total'   => $cartSummary['total'],
+            'items'   => $cartItems,
+            'data'    => $data,
+        ]);
+
+        return redirect()->route('shop.stripe');
+    }
+
+}
