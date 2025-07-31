@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Website;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutRequest;
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Repositories\CartRepositoryInterface;
@@ -50,9 +51,22 @@ class CheckoutController extends Controller
         if ($data['payment_method'] === 'cod') {
             DB::beginTransaction();
 
+
+            $address = Address::create([
+                'user_id'  => session('user_id'),
+                'country'  => $data['country'],
+                'city'     => $data['city'],
+                'area'     => null,
+                'street'   => $data['address'],
+                'building' => null,
+                'phone'    => $data['phone'],
+            ]);
+
+
             try {
                 $order = Order::create([
                     'user_id'        => session('user_id'),
+                    'address_id'     => $address->id,
                     'status'         => 'pending',
                     'total'          => $cartSummary['total'],
                     'payment_method' => 'cod',

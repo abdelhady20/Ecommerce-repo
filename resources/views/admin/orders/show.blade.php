@@ -16,7 +16,7 @@
             <div class="card p-3">
                 <h5>Customer: {{ $order->user->name ?? 'Guest' }}</h5>
                 <p>Email: {{ $order->user->email ?? '-' }}</p>
-                <p>Shipping Address: {{ $order->shipping_address }}</p>
+                <p>Shipping Address:  {{ $order->address->full_address ?? 'No address provided' }}</p>
                 <p>Payment Method: {{ ucfirst($order->payment_method) }}</p>
                 <p>Payment Status: {{ ucfirst($order->payment_status) }}</p>
                 <p>Total: ${{ number_format($order->total, 2) }}</p>

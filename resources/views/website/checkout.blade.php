@@ -55,6 +55,19 @@
                             <textarea name="address" class="form-control" rows="2" required>{{ old('address') }}</textarea>
                             @error('address') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Country *</label>
+                            <select name="country" class="form-control" required>
+                                <option value="">-- Select Country --</option>
+                                <option value="Egypt">Egypt</option>
+                                <option value="Saudi Arabia">Saudi Arabia</option>
+                                <option value="UAE">UAE</option>
+                                <option value="USA">USA</option>
+                                <!-- زود اللي انت عايزه -->
+                            </select>
+                            @error('country') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
                         <div class="col-md-12">
                             <label class="form-label">Notes (Optional)</label>
                             <textarea name="notes" class="form-control" rows="2">{{ old('notes') }}</textarea>

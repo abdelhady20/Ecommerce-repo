@@ -97,10 +97,11 @@
             <div class="newsletter-section">
                 <h4 style="color:var(--primary);font-weight:700;">Stay in Style!</h4>
                 <p style="color:var(--muted);">Sign up for our newsletter to get the latest trends, exclusive offers, and style tips.</p>
-                <form class="d-flex justify-content-center flex-wrap">
-                    <input type="email" placeholder="Your email address" required>
+                <form action="{{ route('register') }}" method="GET" class="d-flex justify-content-center flex-wrap">
+                    <input type="email" name="email" placeholder="Your email address" >
                     <button type="submit" class="btn ms-2">Subscribe</button>
                 </form>
+
             </div>
         </div>
         <!-- Featured Brands Bar -->

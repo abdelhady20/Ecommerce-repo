@@ -24,15 +24,17 @@ class CheckoutRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => ['required', 'string'],
-            'last_name' => ['required', 'string'],
-            'email' => ['required', 'email'],
-            'phone' => ['required'],
-            'address' => ['required|string'],
-            'city' => ['required'],
-            'postal_code' => ['required'],
-            'notes' => ['nullable'],
-            'payment_method'=> ['required', 'in:stripe,cod'],
+            'first_name' => 'required|string|max:255',
+            'last_name'  => 'required|string|max:255',
+            'email'      => 'required|email',
+            'phone'      => 'required|string|max:20',
+            'city'       => 'required|string|max:255',
+            'postal_code'=> 'required|string|max:20',
+            'address'    => 'required|string',
+            'country' => 'required|string|max:255',
+            'notes'      => 'nullable|string',
+            'payment_method' => 'required|in:stripe,cod',
+
         ];
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CouponController;
@@ -170,6 +171,12 @@ Route::prefix('shop')->name('shop.')->group(function () {
 Route::post('/checkout/apply-coupon', [WebsiteCouponController::class, 'apply'])->name('coupon.apply');
 Route::post('/coupon/remove', [WebsiteCouponController::class, 'remove'])->name('coupon.remove');
 
+
+
+Route::middleware('auth.check')->group(function () {
+    Route::get('/account', [AccountController::class, 'index'])->name('account.index');
+    Route::post('/account/password', [AccountController::class, 'updatePassword'])->name('account.password.update');
+});
 
 
 Route::get('/thank-you', function () {
