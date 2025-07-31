@@ -10,8 +10,16 @@ class Address extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'country', 'city', 'area', 'street', 'building', 'phone'
+        'user_id',
+        'country',
+        'city',
+        'area',
+        'street',
+        'building',
+        'phone',
+        'is_default'
     ];
+
 
     public function user()
     {

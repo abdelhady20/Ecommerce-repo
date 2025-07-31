@@ -19,58 +19,72 @@
                 {{-- Shipping Address --}}
                 <div class="col-lg-7">
                     <div class="section-title">Shipping Address</div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label">First Name *</label>
-                            <input type="text" name="first_name" class="form-control" value="{{ old('first_name') }}" required>
-                            @error('first_name') <small class="text-danger">{{ $message }}</small> @enderror
+                    @if(isset($defaultAddress) && $defaultAddress)
+                        <div class="border p-3 mb-3 bg-light">
+                            <h6>Default Address</h6>
+                            <p>{{ $defaultAddress->street }}, {{ $defaultAddress->city }}, {{ $defaultAddress->country }}</p>
+                            <p><strong>Phone:</strong> {{ $defaultAddress->phone }}</p>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="use_default_address" value="1" id="useDefault" checked>
+                                <label class="form-check-label" for="useDefault">
+                                    Use this default address
+                                </label>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Last Name *</label>
-                            <input type="text" name="last_name" class="form-control" value="{{ old('last_name') }}" required>
-                            @error('last_name') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Email *</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
-                            @error('email') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Phone *</label>
-                            <input type="text" name="phone" class="form-control" value="{{ old('phone') }}" required>
-                            @error('phone') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">City *</label>
-                            <input type="text" name="city" class="form-control" value="{{ old('city') }}" required>
-                            @error('city') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Postal Code *</label>
-                            <input type="text" name="postal_code" class="form-control" value="{{ old('postal_code') }}" required>
-                            @error('postal_code') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Full Shiping Address *</label>
-                            <textarea name="address" class="form-control" rows="2" required>{{ old('address') }}</textarea>
-                            @error('address') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Country *</label>
-                            <select name="country" class="form-control" required>
-                                <option value="">-- Select Country --</option>
-                                <option value="Egypt">Egypt</option>
-                                <option value="Saudi Arabia">Saudi Arabia</option>
-                                <option value="UAE">UAE</option>
-                                <option value="USA">USA</option>
-                                <!-- زود اللي انت عايزه -->
-                            </select>
-                            @error('country') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>
-
-                        <div class="col-md-12">
-                            <label class="form-label">Notes (Optional)</label>
-                            <textarea name="notes" class="form-control" rows="2">{{ old('notes') }}</textarea>
+                        <hr>
+                    @endif
+                    <div id="newAddressFields" @if(isset($defaultAddress) && $defaultAddress) style="display:none;" @endif>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name *</label>
+                                <input type="text" name="first_name" class="form-control" value="{{ old('first_name') }}">
+                                @error('first_name') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name *</label>
+                                <input type="text" name="last_name" class="form-control" value="{{ old('last_name') }}">
+                                @error('last_name') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email *</label>
+                                <input type="email" name="email" class="form-control" value="{{ old('email') }}">
+                                @error('email') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone *</label>
+                                <input type="text" name="phone" class="form-control" value="{{ old('phone') }}">
+                                @error('phone') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">City *</label>
+                                <input type="text" name="city" class="form-control" value="{{ old('city') }}">
+                                @error('city') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Postal Code *</label>
+                                <input type="text" name="postal_code" class="form-control" value="{{ old('postal_code') }}">
+                                @error('postal_code') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Full Shipping Address *</label>
+                                <textarea name="address" class="form-control" rows="2">{{ old('address') }}</textarea>
+                                @error('address') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Country *</label>
+                                <select name="country" class="form-control">
+                                    <option value="">-- Select Country --</option>
+                                    <option value="Egypt">Egypt</option>
+                                    <option value="Saudi Arabia">Saudi Arabia</option>
+                                    <option value="UAE">UAE</option>
+                                    <option value="USA">USA</option>
+                                </select>
+                                @error('country') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Notes (Optional)</label>
+                                <textarea name="notes" class="form-control" rows="2">{{ old('notes') }}</textarea>
+                            </div>
                         </div>
                     </div>
 
@@ -88,6 +102,15 @@
                     <small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 {{-- Order Summary --}}
                 <div class="col-lg-5">
@@ -121,5 +144,11 @@
             </div>
         </form>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    {{-- Script to toggle new address form --}}
+    <script>
+        document.getElementById('useDefault')?.addEventListener('change', function() {
+            document.getElementById('newAddressFields').style.display = this.checked ? 'none' : 'block';
+        });
+    </script>
 @endsection

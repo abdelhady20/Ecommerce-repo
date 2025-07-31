@@ -176,7 +176,13 @@ Route::post('/coupon/remove', [WebsiteCouponController::class, 'remove'])->name(
 Route::middleware('auth.check')->group(function () {
     Route::get('/account', [AccountController::class, 'index'])->name('account.index');
     Route::post('/account/password', [AccountController::class, 'updatePassword'])->name('account.password.update');
+
+
+    Route::get('/account/addresses', [AccountController::class, 'addresses'])->name('account.addresses');
+    Route::post('/account/addresses/{id}/default', [AccountController::class, 'setDefaultAddress'])->name('account.address.default');
+    Route::delete('/account/address/{id}', [AccountController::class, 'deleteAddress'])->name('account.address.delete');
 });
+
 
 
 Route::get('/thank-you', function () {

@@ -31,13 +31,16 @@ class CheckoutController extends Controller
             'total' => 0,
         ];
 
-        return view('website.checkout', compact('cartItems', 'cartSummary'));
+        $addresses = Address::where('user_id', session('user_id'))->get();
+        $defaultAddress = $addresses->where('is_default', true)->first();
+
+        return view('website.checkout', compact('cartItems', 'cartSummary', 'addresses', 'defaultAddress'));
+
     }
 
     public function store(CheckoutRequest $request)
     {
         $data = $request->validated();
-
 
         $cart = $this->cartRepo->all();
         $cartItems = $cart['items'] ?? [];
@@ -51,19 +54,28 @@ class CheckoutController extends Controller
         if ($data['payment_method'] === 'cod') {
             DB::beginTransaction();
 
-
-            $address = Address::create([
-                'user_id'  => session('user_id'),
-                'country'  => $data['country'],
-                'city'     => $data['city'],
-                'area'     => null,
-                'street'   => $data['address'],
-                'building' => null,
-                'phone'    => $data['phone'],
-            ]);
-
-
             try {
+
+                if ($request->filled('use_default_address') && $request->use_default_address == 1) {
+                    $address = Address::where('user_id', session('user_id'))
+                        ->where('is_default', true)
+                        ->firstOrFail();
+                } else {
+
+                    Address::where('user_id', session('user_id'))->update(['is_default' => false]);
+                    $address = Address::create([
+                        'user_id'    => session('user_id'),
+                        'country'    => $data['country'],
+                        'city'       => $data['city'],
+                        'area'       => null,
+                        'street'     => $data['address'],
+                        'building'   => null,
+                        'phone'      => $data['phone'],
+                        'is_default' => true,
+                    ]);
+                }
+
+
                 $order = Order::create([
                     'user_id'        => session('user_id'),
                     'address_id'     => $address->id,
@@ -103,5 +115,7 @@ class CheckoutController extends Controller
 
         return redirect()->route('shop.stripe');
     }
+
+
 
 }

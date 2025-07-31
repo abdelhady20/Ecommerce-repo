@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Website;
 
 use App\Http\Controllers\Controller;
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Services\SessionCartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -40,6 +42,7 @@ class StripePaymentController extends Controller
         try {
             $checkout = session('stripe_checkout');
             $total = $checkout['total'];
+            $data = $checkout['data'];
 
 
             $charge = Charge::create([
@@ -50,8 +53,27 @@ class StripePaymentController extends Controller
             ]);
 
 
+            $address = Address::where('user_id', $checkout['user_id'])
+                ->where('is_default', true)
+                ->first();
+
+            if (!$address) {
+                $address = Address::create([
+                    'user_id'    => $checkout['user_id'],
+                    'country'    => $data['country'],
+                    'city'       => $data['city'],
+                    'area'       => null,
+                    'street'     => $data['address'],
+                    'building'   => null,
+                    'phone'      => $data['phone'],
+                    'is_default' => true,
+                ]);
+            }
+
+
             $order = Order::create([
                 'user_id'        => $checkout['user_id'],
+                'address_id'     => $address->id,
                 'status'         => 'processing',
                 'total'          => $total,
                 'payment_method' => 'stripe',
@@ -69,20 +91,17 @@ class StripePaymentController extends Controller
 
             DB::commit();
 
-            app(\App\Services\SessionCartService::class)->clear();
+            app(SessionCartService::class)->clear();
             session()->forget('stripe_checkout');
 
             return redirect()->route('shop.thankyou')->with('success', 'Payment successful.');
 
         } catch (\Stripe\Exception\CardException $e) {
             DB::rollBack();
-
             return redirect()->back()->withErrors(['stripe' => 'Payment failed: ' . $e->getError()->message]);
         } catch (\Exception $e) {
             DB::rollBack();
-
             Log::error('Stripe Payment Error: ' . $e->getMessage());
-
             return redirect()->route('shop.checkout')
                 ->withErrors(['stripe' => 'Payment failed. Please try again later.']);
         }
