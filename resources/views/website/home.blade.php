@@ -6,74 +6,37 @@
     <div class="page-content pb-5">
         <div class="container">
             <div class="row">
+
                 <!-- Sidebar -->
                 <aside class="col-lg-3 mb-4">
                     <div class="sidebar">
                         <div class="category-title">Categories</div>
                         <nav class="nav flex-column">
-                            <div class="row g-3">
 
-                                <!-- Women -->
-                                <div class="col-12">
-                                    <div class="banner banner-overlay shadow-sm rounded-4 overflow-hidden">
-                                        <a href="{{ route('website.category.subcategories', 'women') }}">
-                                            <img src="{{ asset('assets/images/categories/banner-1.jpg') }}"
-                                                 alt="Women's Category"
-                                                 class="w-100 h-100 object-fit-cover">
-                                        </a>
-                                        <div class="banner-content banner-content-center text-center p-4">
-                                            <h4 class="banner-subtitle" style="color: var(--accent)">New in</h4>
-                                            <h3 class="banner-title fw-bold mb-3" style="color: var(--accent)">Women’s</h3>
-                                            <a href="{{ route('website.category.subcategories', 'women') }}"
-                                               class="btn shop-now-btn rounded-pill">
-                                                Shop Now
+
+                            <a class="nav-link {{ request()->is('shop') ? 'active' : '' }}"
+                               href="{{ route('shop.index') }}">
+                                All
+                            </a>
+
+                            @foreach($categories as $category)
+                                <a class="nav-link {{ request()->is('category/'.$category->slug.'/subcategories') ? 'active' : '' }}"
+                                   href="{{ route('website.category.subcategories', $category->slug) }}">
+                                    {{ $category->name }}
+                                </a>
+
+                                @if($category->children->count())
+                                    <div class="subcategory-list ms-3">
+                                        @foreach($category->children as $subcategory)
+                                            <a class="subcategory-link {{ request()->is('category/subcategory/'.$subcategory->slug.'/products') ? 'active' : '' }}"
+                                               href="{{ route('website.category.subcategory.products', $subcategory->slug) }}">
+                                                {{ $subcategory->name }}
                                             </a>
-                                        </div>
+                                        @endforeach
                                     </div>
-                                </div>
+                                @endif
+                            @endforeach
 
-                                <!-- Men -->
-                                <div class="col-12">
-                                    <div class="banner banner-overlay shadow-sm rounded-4 overflow-hidden">
-                                        <a href="{{ route('website.category.subcategories', 'men') }}">
-                                            <img src="{{ asset('assets/images/categories/banner-2.jpg') }}"
-                                                 alt="Men's Category"
-                                                 class="w-100 h-100 object-fit-cover">
-                                        </a>
-                                        <div class="banner-content banner-content-center text-center p-4">
-                                            <h4 class="banner-subtitle" style="color: var(--accent)">New in</h4>
-                                            <h3 class="banner-title fw-bold mb-3" style="color: var(--accent)">Men’s</h3>
-                                            <a href="{{ route('website.category.subcategories', 'men') }}"
-                                               class="btn shop-now-btn rounded-pill">
-                                                Shop Now
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Kids -->
-                                <div class="col-12">
-                                    <div class="banner banner-overlay shadow-sm rounded-4 overflow-hidden">
-                                        <a href="{{ route('website.category.subcategories', 'kids') }}">
-                                            <img src="{{ asset('assets/images/categories/kids-2-918x1024-1.png') }}"
-                                                 alt="Kids Category"
-                                                 class="w-100 h-100 object-fit-cover">
-                                        </a>
-                                        <div class="banner-content banner-content-center text-center p-4">
-                                            <h4 class="banner-subtitle" style="color: var(--accent)">New in</h4>
-                                            <h3 class="banner-title fw-bold mb-3" style="color: var(--accent)">Kids</h3>
-                                            <a href="{{ route('website.category.subcategories', 'kids') }}"
-                                               class="btn shop-now-btn rounded-pill">
-                                                Shop Now
-                                            </a>
-                                            <p class="mt-2" style="font-size: 0.9rem; color: #666;">
-                                                T-shirts, trousers, shoes & more
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
                         </nav>
                     </div>
                 </aside>
@@ -117,6 +80,57 @@
         </div>
     </div>
     <style>
+        .sidebar {
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid #f3eaea;
+            padding: 2rem 1.2rem 1.2rem 1.2rem;
+            min-width: 220px;
+            max-width: 260px;
+            margin-bottom: 2rem;
+        }
+        .sidebar .category-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
+            letter-spacing: 0.04em;
+        }
+        .sidebar .nav-link {
+            color: var(--text);
+            font-weight: 500;
+            padding: 0.4rem 0.7rem;
+            border-radius: 6px;
+            margin-bottom: 0.2rem;
+            transition: background 0.15s, color 0.15s;
+            font-size: 1rem;
+        }
+        .sidebar .nav-link.active, .sidebar .nav-link:hover {
+            background: #fbeeee;
+            color: var(--accent);
+        }
+        .sidebar .subcategory-list {
+            margin-left: 1.2rem;
+            margin-bottom: 0.7rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+        .sidebar .subcategory-link {
+            color: var(--muted);
+            font-size: 0.97rem;
+            padding: 0.2rem 0.7rem;
+            border-radius: 8px;
+            transition: background 0.15s, color 0.15s;
+            cursor: pointer;
+            text-decoration: none;
+            margin-left: 0.5rem;
+        }
+        .sidebar .subcategory-link:hover, .sidebar .subcategory-link.active {
+            background: #fbeeee;
+            color: var(--accent);
+        }
 
         :root {
             --primary: #181818;

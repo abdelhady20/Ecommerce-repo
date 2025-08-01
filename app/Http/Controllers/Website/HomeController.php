@@ -11,15 +11,27 @@ class HomeController extends Controller
 {
     public function main_home()
     {
-        $newProducts = Product::latest()->take(8)->get();
-        $products = Product::latest()->paginate(8);
+        // أحدث 8 منتجات (أعلى id)
+        $newProducts = Product::orderBy('id', 'asc')->take(8)->get();
 
-        return view('website.main_home', compact('newProducts', 'products'));
+        // أقدم 8 منتجات (أقل id)
+        $oldProducts = Product::orderBy('id', 'desc')->take(8)->get();
+
+        return view('website.main_home', [
+            'newProducts' => $newProducts,
+            'products' => $oldProducts,
+        ]);
     }
+
+
 
     public function index(Request $request)
     {
-        $categories = Category::whereNull('parent_id')->get();
+        $categories = Category::whereNull('parent_id')
+            ->with('children')
+            ->get();
+
+
 
         $query = $request->input('search');
 

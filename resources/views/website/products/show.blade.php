@@ -119,7 +119,7 @@
     <div class="container">
         <div class="product-main">
             <div class="row">
-                <!-- الصور -->
+
                 <div class="col-lg-5 mb-4 mb-lg-0">
                     <img src="{{ asset('uploads/' . $product->main_image) }}"
                          alt="{{ $product->name }}"
@@ -137,7 +137,6 @@
                     @endif
                 </div>
 
-                <!-- تفاصيل المنتج -->
                 <div class="col-lg-7">
                     <div class="product-title">{{ $product->name }}</div>
                     <p class="text-muted mb-1">Category: {{ $product->category?->name }}</p>
@@ -163,7 +162,7 @@
                         </button>
                     </form>
 
-                    <!-- جدول المواصفات -->
+
                     <div class="product-details">
                         <h5>Product Details</h5>
                         <table class="table product-specs mb-0">

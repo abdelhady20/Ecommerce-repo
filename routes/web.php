@@ -124,9 +124,12 @@ Route::get('/search/shop', [HomeController::class, 'index'])->name('shop.index')
 
 // Subcategories by Main Category (e.g., Men, Women)
 Route::prefix('category')->name('website.category.')->group(function () {
-    Route::get('/{mainCategory:slug}/subcategories', [WebsiteCategoryController::class, 'showSubcategories'])->name('subcategories');
-    Route::get('/subcategory/{subcategory:slug}/products', [WebsiteCategoryController::class, 'showSubcategoryProducts'])->name('subcategory.products');
+    Route::get('/subcategory/{subcategory:slug}/products', [WebsiteCategoryController::class, 'showSubcategoryProducts'])
+        ->name('subcategory.products');
+    Route::get('/{mainCategory:slug}/subcategories', [WebsiteCategoryController::class, 'showSubcategories'])
+        ->name('subcategories');
 });
+
 
 
 Route::get('product/{product}', [ProductDetailsController::class, 'show'])->name('product.details');
