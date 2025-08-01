@@ -14,28 +14,33 @@
                         <nav class="nav flex-column">
 
 
-                            <a class="nav-link {{ request()->is('shop') ? 'active' : '' }}"
-                               href="{{ route('shop.index') }}">
+                            <!--  All -->
+                            <a class="nav-link {{ request('category') || request('subcategory') ? '' : 'active' }}"
+                               href="{{ route('shop.index', request()->except(['category','subcategory'])) }}">
                                 All
                             </a>
 
                             @foreach($categories as $category)
-                                <a class="nav-link {{ request()->is('category/'.$category->slug.'/subcategories') ? 'active' : '' }}"
-                                   href="{{ route('website.category.subcategories', $category->slug) }}">
+                                <a class="nav-link {{ request('category') == $category->slug && !request('subcategory') ? 'active' : '' }}"
+                                   href="{{ route('shop.index', array_merge(request()->query(), ['category' => $category->slug, 'subcategory' => null])) }}">
                                     {{ $category->name }}
                                 </a>
 
                                 @if($category->children->count())
                                     <div class="subcategory-list ms-3">
                                         @foreach($category->children as $subcategory)
-                                            <a class="subcategory-link {{ request()->is('category/subcategory/'.$subcategory->slug.'/products') ? 'active' : '' }}"
-                                               href="{{ route('website.category.subcategory.products', $subcategory->slug) }}">
+                                            <a class="subcategory-link {{ request('subcategory') == $subcategory->slug ? 'active' : '' }}"
+                                               href="{{ route('shop.index', array_merge(request()->query(), [
+                                                                'category' => $category->slug,
+                                                                'subcategory' => $subcategory->slug
+                                                                ])) }}">
                                                 {{ $subcategory->name }}
                                             </a>
                                         @endforeach
                                     </div>
                                 @endif
                             @endforeach
+
 
                         </nav>
                     </div>

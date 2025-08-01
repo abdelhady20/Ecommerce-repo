@@ -11,10 +11,8 @@ class HomeController extends Controller
 {
     public function main_home()
     {
-        // أحدث 8 منتجات (أعلى id)
-        $newProducts = Product::orderBy('id', 'asc')->take(8)->get();
 
-        // أقدم 8 منتجات (أقل id)
+        $newProducts = Product::orderBy('id', 'asc')->take(8)->get();
         $oldProducts = Product::orderBy('id', 'desc')->take(8)->get();
 
         return view('website.main_home', [
@@ -31,20 +29,49 @@ class HomeController extends Controller
             ->with('children')
             ->get();
 
-
-
-        $query = $request->input('search');
+        $search = $request->input('search');
+        $categorySlug = $request->input('category');
+        $subcategorySlug = $request->input('subcategory');
 
         $products = Product::query()
-            ->when($query, function ($q) use ($query) {
-                $q->where('name', 'like', "%{$query}%")
-                    ->orWhere('description', 'like', "%{$query}%");
+
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+
+            ->when($categorySlug, function ($q) use ($categorySlug) {
+                $category = Category::where('slug', $categorySlug)
+                    ->with('children')
+                    ->first();
+                if ($category) {
+                    $ids = $category->children->pluck('id')->toArray();
+                    $ids[] = $category->id;
+                    $q->whereIn('category_id', $ids);
+                }
+            })
+
+            ->when($subcategorySlug, function ($q) use ($subcategorySlug) {
+                $subcategory = Category::where('slug', $subcategorySlug)->first();
+                if ($subcategory) {
+                    $q->where('category_id', $subcategory->id);
+                }
             })
             ->latest()
-            ->paginate(8);
+            ->paginate(8)
+            ->appends($request->query());
 
-        return view('website.home', compact('categories', 'products', 'query'));
+        return view('website.home', compact(
+            'categories',
+            'products',
+            'search',
+            'categorySlug',
+            'subcategorySlug'
+        ));
     }
+
 
 
 }
