@@ -13,16 +13,15 @@
                         <div class="category-title">Categories</div>
                         <nav class="nav flex-column">
 
-
-                            <!--  All -->
+                            <!-- All -->
                             <a class="nav-link {{ request('category') || request('subcategory') ? '' : 'active' }}"
-                               href="{{ route('shop.index', request()->except(['category','subcategory'])) }}">
+                               href="{{ route('shop.index', request()->except(['category','subcategory','page'])) }}">
                                 All
                             </a>
 
                             @foreach($categories as $category)
                                 <a class="nav-link {{ request('category') == $category->slug && !request('subcategory') ? 'active' : '' }}"
-                                   href="{{ route('shop.index', array_merge(request()->query(), ['category' => $category->slug, 'subcategory' => null])) }}">
+                                   href="{{ route('shop.index', array_merge(request()->except(['page']), ['category' => $category->slug, 'subcategory' => null])) }}">
                                     {{ $category->name }}
                                 </a>
 
@@ -30,17 +29,16 @@
                                     <div class="subcategory-list ms-3">
                                         @foreach($category->children as $subcategory)
                                             <a class="subcategory-link {{ request('subcategory') == $subcategory->slug ? 'active' : '' }}"
-                                               href="{{ route('shop.index', array_merge(request()->query(), [
-                                                                'category' => $category->slug,
-                                                                'subcategory' => $subcategory->slug
-                                                                ])) }}">
+                                               href="{{ route('shop.index', array_merge(request()->except(['page']), [
+                                                'category' => $category->slug,
+                                                'subcategory' => $subcategory->slug
+                                           ])) }}">
                                                 {{ $subcategory->name }}
                                             </a>
                                         @endforeach
                                     </div>
                                 @endif
                             @endforeach
-
 
                         </nav>
                     </div>
@@ -49,10 +47,12 @@
                 <!-- Main Content -->
                 <main class="col-lg-9">
                     <!-- Search Bar -->
-                    <form class="search-bar mb-4 d-flex align-items-center" action="{{ route('shop.index') }}" method="GET" role="search">
+                    <form class="search-bar mb-4 d-flex align-items-center" action="{{ route('shop.index') }}" method="GET" role="search"
+                          onsubmit="this.querySelectorAll('[name=page]').forEach(el=>el.remove());">
                         <i class="fa fa-search me-2"></i>
                         <input type="text" class="form-control" name="search" placeholder="Search for fashion, brands, or categories..." value="{{ request('search') }}">
                     </form>
+
                     <!-- Product Grid -->
                     <div class="row g-4">
                         @foreach($products as $product)
@@ -70,7 +70,7 @@
 
                     <!-- Pagination -->
                     <div class="mt-4">
-                        {{ $products->links('pagination::bootstrap-5') }}
+                        {{ $products->appends(request()->query())->links('pagination::bootstrap-5') }}
                     </div>
 
                     <!-- Benefits Bar -->
@@ -84,6 +84,8 @@
             </div>
         </div>
     </div>
+
+
     <style>
         .sidebar {
             background: var(--card);
@@ -352,5 +354,7 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 @endsection
+
 
