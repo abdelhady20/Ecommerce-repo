@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CouponController;
@@ -30,10 +31,92 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', function () {
-    return view('welcome');
+
+
+//Admin Routes - dashboard login
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login.form');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('login');
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 });
 
+// Admin Routes - Protected by Admin Middleware
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth.admin'])
+    ->group(function () {
+
+        // Dashboard
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Categories
+        Route::prefix('categories')->name('categories.')->group(function () {
+            Route::get('/', [CategoryController::class, 'index'])->name('index');
+            Route::get('/create', [CategoryController::class, 'create'])->name('create');
+            Route::post('/', [CategoryController::class, 'store'])->name('store');
+            Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('edit');
+            Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
+            Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
+        });
+
+        // Brands
+        Route::prefix('brands')->name('brands.')->group(function () {
+            Route::get('/', [BrandController::class, 'index'])->name('index');
+            Route::get('/create', [BrandController::class, 'create'])->name('create');
+            Route::post('/', [BrandController::class, 'store'])->name('store');
+            Route::get('/{brand}/edit', [BrandController::class, 'edit'])->name('edit');
+            Route::put('/{brand}', [BrandController::class, 'update'])->name('update');
+            Route::delete('/{brand}', [BrandController::class, 'destroy'])->name('destroy');
+        });
+
+        // Products
+        Route::prefix('products')->name('products.')->group(function () {
+            Route::get('/', [ProductController::class, 'index'])->name('index');
+            Route::get('/create', [ProductController::class, 'create'])->name('create');
+            Route::post('/', [ProductController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [ProductController::class, 'update'])->name('update');
+            Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
+        });
+
+        // Orders
+        Route::prefix('orders')->name('orders.')->group(function () {
+            Route::get('/', [OrderController::class, 'index'])->name('index');
+            Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+            Route::post('/{order}/status', [OrderController::class, 'updateStatus'])->name('updateStatus');
+        });
+
+        // Coupons
+        Route::prefix('coupons')->name('coupons.')->group(function () {
+            Route::get('/', [CouponController::class, 'index'])->name('index');
+            Route::get('/create', [CouponController::class, 'create'])->name('create');
+            Route::post('/', [CouponController::class, 'store'])->name('store');
+            Route::get('/{coupon}/edit', [CouponController::class, 'edit'])->name('edit');
+            Route::put('/{coupon}', [CouponController::class, 'update'])->name('update');
+            Route::delete('/{coupon}', [CouponController::class, 'destroy'])->name('destroy');
+        });
+
+        // Users
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::get('/create', [UserController::class, 'create'])->name('create');
+            Route::post('/', [UserController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [UserController::class, 'update'])->name('update');
+            Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
+        });
+    });
+
+//-----------------------------------------------------------------------------------------//
+// Website Routes "Home"
+Route::get('/', [HomeController::class, 'main_home'])->name('main-home');
+Route::get('/home', [HomeController::class, 'index'])->name('website.home');
+Route::get('/shop', [WebsiteCategoryController::class, 'index'])->name('website.shop');
+Route::get('/search/shop', [HomeController::class, 'index'])->name('shop.index');
+
+
+//---------User login and register------------//
 Route::get('/register', [RegisterController::class, 'showForm'])->name('register.form');
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
 
@@ -45,82 +128,7 @@ Route::post('/logout', function () {
     return redirect('/login');
 })->name('logout');
 
-Route::get('/auth/checkout', function () {
-    return view('website.checkout');
-})->middleware('auth.check');
-
-
-
-
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-});
-
-//Categories
-Route::prefix('admin/categories')->name('admin.categories.')->group(function () {
-    Route::get('/', [CategoryController::class, 'index'])->name('index');
-    Route::get('/create', [CategoryController::class, 'create'])->name('create');
-    Route::post('/', [CategoryController::class, 'store'])->name('store');
-    Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('edit');
-    Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
-    Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
-});
-
-//Brand
-Route::prefix('admin/brands')->name('admin.brands.')->group(function () {
-    Route::get('/', [BrandController::class, 'index'])->name('index');
-    Route::get('/create', [BrandController::class, 'create'])->name('create');
-    Route::post('/', [BrandController::class, 'store'])->name('store');
-    Route::get('/{brand}/edit', [BrandController::class, 'edit'])->name('edit');
-    Route::put('/{brand}', [BrandController::class, 'update'])->name('update');
-    Route::delete('/{brand}', [BrandController::class, 'destroy'])->name('destroy');
-});
-
-//Products
-Route::prefix('admin/products')->name('admin.products.')->group(function () {
-    Route::get('/', [ProductController::class, 'index'])->name('index');
-    Route::get('/create', [ProductController::class, 'create'])->name('create');
-    Route::post('/', [ProductController::class, 'store'])->name('store');
-    Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [ProductController::class, 'update'])->name('update');
-    Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
-});
-
-//Orders
-Route::prefix('admin/orders')->name('admin.orders.')->group(function () {
-    Route::get('/', [OrderController::class, 'index'])->name('index');
-    Route::get('/{id}', [OrderController::class, 'show'])->name('show');
-    Route::post('/{order}/status', [OrderController::class, 'updateStatus'])->name('updateStatus');
-});
-
-//Coupons
-Route::prefix('admin/coupons')->name('admin.coupons.')->group(function () {
-    Route::get('/', [CouponController::class, 'index'])->name('index');
-    Route::get('/create', [CouponController::class, 'create'])->name('create');
-    Route::post('/', [CouponController::class, 'store'])->name('store');
-    Route::get('/{coupon}/edit', [CouponController::class, 'edit'])->name('edit');
-    Route::put('/{coupon}', [CouponController::class, 'update'])->name('update');
-    Route::delete('/{coupon}', [CouponController::class, 'destroy'])->name('destroy');
-});
-
-//Users
-Route::prefix('admin')->name('admin.')->middleware(['web'])->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('/users', [UserController::class, 'store'])->name('users.store');
-    Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-});
-//-----------------------------------------------------------------------------------------//
-// Website Routes "Home"
-Route::get('/main-home', [HomeController::class, 'main_home'])->name('main-home');
-Route::get('/home', [HomeController::class, 'index'])->name('website.home');
-Route::get('/shop', [WebsiteCategoryController::class, 'index'])->name('website.shop');
-Route::get('/search/shop', [HomeController::class, 'index'])->name('shop.index');
-
-
-//-----------------------------------------//
+//--------------------------------------------------------------------------------------//
 
 // Subcategories by Main Category (e.g., Men, Women)
 Route::prefix('category')->name('website.category.')->group(function () {
@@ -163,6 +171,10 @@ Route::prefix('shop')->name('shop.')->middleware('auth.check')->group(function (
     Route::post('/checkout/apply-coupon', [WebsiteCouponController::class, 'apply'])->name('coupon.apply');
     Route::post('/coupon/remove', [WebsiteCouponController::class, 'remove'])->name('coupon.remove');
 });
+
+Route::get('/auth/checkout', function () {
+    return view('website.checkout');
+})->middleware('auth.check');
 
 
 //payment routes
