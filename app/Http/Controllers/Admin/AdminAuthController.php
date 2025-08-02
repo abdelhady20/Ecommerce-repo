@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class AdminAuthController extends Controller
 {
@@ -21,21 +20,22 @@ class AdminAuthController extends Controller
             'password' => 'required'
         ]);
 
-        $admin = User::where('email', $request->email)->where('role', 'admin')->first();
-
-        if (!$admin || !Hash::check($request->password, $admin->password)) {
-            return back()->withErrors(['email' => 'Invalid credentials or not an admin']);
+        if (Auth::guard('admin')->attempt([
+            'email' => $request->email,
+            'password' => $request->password,
+            'role' => 'admin'
+        ])) {
+            return redirect()->route('admin.dashboard');
         }
 
-
-        session(['user_id' => $admin->id]);
-
-        return redirect()->route('admin.dashboard');
+        return back()->withErrors(['email' => 'Invalid credentials or not an admin']);
     }
 
     public function logout()
     {
-        session()->forget('user_id');
+        Auth::guard('admin')->logout();
         return redirect()->route('admin.login.form');
     }
 }
+
+

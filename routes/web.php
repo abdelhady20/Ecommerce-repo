@@ -19,6 +19,7 @@ use App\Http\Controllers\Website\StripePaymentController;
 use App\Http\Controllers\Website\WebsiteCategoryController;
 use App\Http\Controllers\Website\WebsiteCouponController;
 use App\Http\Controllers\Website\WishlistController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,7 +45,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // Admin Routes - Protected by Admin Middleware
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth.admin'])
+    ->middleware(['auth:admin'])
     ->group(function () {
 
         // Dashboard
@@ -124,7 +125,7 @@ Route::get('/login', [LoginController::class, 'showForm'])->name('login.form');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 Route::post('/logout', function () {
-    session()->forget('user_id');
+    Auth::guard('web')->logout();
     return redirect('/login');
 })->name('logout');
 
