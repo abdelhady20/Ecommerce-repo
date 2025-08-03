@@ -1,211 +1,153 @@
 @extends('admin.layouts.app')
+
 @section('style')
+    <style>
+        body { background: #f4f6f9; }
+        .content-wrapper { padding: 1.5rem; }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .stat-icon {
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+    </style>
 @endsection
+
 @section('content')
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0">Dashboard v3</h1>
+        <div class="container-fluid">
+
+            <!-- 📊 Stats Row -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <div class="card bg-primary text-white p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3>{{ $stats['totalOrders'] }}</h3>
+                                <p>Total Orders</p>
+                            </div>
+                            <i class="fas fa-shopping-bag stat-icon"></i>
+                        </div>
                     </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Dashboard v3</li>
-                        </ol>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="card bg-success text-white p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3>{{ $stats['totalCustomers'] }}</h3>
+                                <p>Customers</p>
+                            </div>
+                            <i class="fas fa-users stat-icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="card bg-warning text-white p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3>{{ $stats['totalProducts'] }}</h3>
+                                <p>Products</p>
+                            </div>
+                            <i class="fas fa-box stat-icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="card bg-danger text-white p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3>{{ $stats['totalCategories'] }}</h3>
+                                <p>Categories</p>
+                            </div>
+                            <i class="fas fa-list stat-icon"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Main content -->
-        <div class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <!-- Visitors Card -->
-                        <div class="card">
-                            <div class="card-header border-0">
-                                <div class="d-flex justify-content-between">
-                                    <h3 class="card-title">Online Store Visitors</h3>
-                                    <a href="javascript:void(0);">View Report</a>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex">
-                                    <p class="d-flex flex-column">
-                                        <span class="text-bold text-lg">820</span>
-                                        <span>Visitors Over Time</span>
-                                    </p>
-                                    <p class="ml-auto d-flex flex-column text-right">
-                                    <span class="text-success">
-                                        <i class="fas fa-arrow-up"></i> 12.5%
-                                    </span>
-                                        <span class="text-muted">Since last week</span>
-                                    </p>
-                                </div>
-                                <div class="position-relative mb-4">
-                                    <canvas id="visitors-chart" height="200"></canvas>
-                                </div>
-                                <div class="d-flex flex-row justify-content-end">
-                                <span class="mr-2">
-                                    <i class="fas fa-square text-primary"></i> This Week
-                                </span>
-                                    <span>
-                                    <i class="fas fa-square text-gray"></i> Last Week
-                                </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Products Card -->
-                        <div class="card">
-                            <div class="card-header border-0">
-                                <h3 class="card-title">Products</h3>
-                                <div class="card-tools">
-                                    <a href="#" class="btn btn-tool btn-sm"><i class="fas fa-download"></i></a>
-                                    <a href="#" class="btn btn-tool btn-sm"><i class="fas fa-bars"></i></a>
-                                </div>
-                            </div>
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-striped table-valign-middle">
-                                    <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Price</th>
-                                        <th>Sales</th>
-                                        <th>More</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>
-                                            <img src="{{asset('assets/dist/img/default-150x150.png')}}" alt="Product 1" class="img-circle img-size-32 mr-2">
-                                            Some Product
-                                        </td>
-                                        <td>$13 USD</td>
-                                        <td>
-                                            <small class="text-success mr-1"><i class="fas fa-arrow-up"></i> 12%</small>
-                                            12,000 Sold
-                                        </td>
-                                        <td>
-                                            <a href="#" class="text-muted"><i class="fas fa-search"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <img src="{{asset('assets/dist/img/default-150x150.png')}}" alt="Product 2" class="img-circle img-size-32 mr-2">
-                                            Another Product
-                                        </td>
-                                        <td>$29 USD</td>
-                                        <td>
-                                            <small class="text-warning mr-1"><i class="fas fa-arrow-down"></i> 0.5%</small>
-                                            123,234 Sold
-                                        </td>
-                                        <td>
-                                            <a href="#" class="text-muted"><i class="fas fa-search"></i></a>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+            <!-- 📈 Charts Row -->
+            <div class="row mt-4">
+                <div class="col-lg-8">
+                    <div class="card p-3">
+                        <h5>Monthly Sales</h5>
+                        <canvas id="salesChart" height="300"></canvas>
                     </div>
-
-                    <!-- Sales & Overview Section -->
-                    <div class="col-lg-6">
-                        <!-- Sales Card -->
-                        <div class="card">
-                            <div class="card-header border-0">
-                                <div class="d-flex justify-content-between">
-                                    <h3 class="card-title">Sales</h3>
-                                    <a href="javascript:void(0);">View Report</a>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex">
-                                    <p class="d-flex flex-column">
-                                        <span class="text-bold text-lg">$18,230.00</span>
-                                        <span>Sales Over Time</span>
-                                    </p>
-                                    <p class="ml-auto d-flex flex-column text-right">
-                                    <span class="text-success">
-                                        <i class="fas fa-arrow-up"></i> 33.1%
-                                    </span>
-                                        <span class="text-muted">Since last month</span>
-                                    </p>
-                                </div>
-                                <div class="position-relative mb-4">
-                                    <canvas id="sales-chart" height="200"></canvas>
-                                </div>
-                                <div class="d-flex flex-row justify-content-end">
-                                <span class="mr-2">
-                                    <i class="fas fa-square text-primary"></i> This year
-                                </span>
-                                    <span>
-                                    <i class="fas fa-square text-gray"></i> Last year
-                                </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Overview Card -->
-                        <div class="card">
-                            <div class="card-header border-0">
-                                <h3 class="card-title">Online Store Overview</h3>
-                                <div class="card-tools">
-                                    <a href="#" class="btn btn-sm btn-tool"><i class="fas fa-download"></i></a>
-                                    <a href="#" class="btn btn-sm btn-tool"><i class="fas fa-bars"></i></a>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
-                                    <div class="bg-success rounded-circle p-3 text-white">
-                                        <i class="fas fa-sync-alt fa-lg"></i>
-                                    </div>
-                                    <p class="d-flex flex-column text-right">
-                                    <span class="font-weight-bold">
-                                        <i class="fas fa-arrow-up text-success"></i> 12%
-                                    </span>
-                                        <span class="text-muted">CONVERSION RATE</span>
-                                    </p>
-                                </div>
-
-                                <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
-                                    <div class="bg-warning rounded-circle p-3 text-white">
-                                        <i class="fas fa-shopping-cart fa-lg"></i>
-                                    </div>
-                                    <p class="d-flex flex-column text-right">
-                                    <span class="font-weight-bold">
-                                        <i class="fas fa-arrow-up text-warning"></i> 0.8%
-                                    </span>
-                                        <span class="text-muted">SALES RATE</span>
-                                    </p>
-                                </div>
-
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="bg-danger rounded-circle p-3 text-white">
-                                        <i class="fas fa-users fa-lg"></i>
-                                    </div>
-                                    <p class="d-flex flex-column text-right">
-                                    <span class="font-weight-bold">
-                                        <i class="fas fa-arrow-down text-danger"></i> 1%
-                                    </span>
-                                        <span class="text-muted">REGISTRATION RATE</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card p-3">
+                        <h5>Orders Status</h5>
+                        <canvas id="ordersPie" height="200"></canvas>
                     </div>
-                    <!-- End Column -->
                 </div>
             </div>
+
+            <!-- 📋 Latest Orders Table -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card p-3">
+                        <h5>Latest Orders</h5>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($latestOrders as $order)
+                                <tr>
+                                    <td>{{ $order->id }}</td>
+                                    <td>{{ $order->user->name }}</td>
+                                    <td>{{ ucfirst($order->status) }}</td>
+                                    <td>{{ $order->total }} EGP</td>
+                                    <td>{{ $order->created_at->format('Y-m-d') }}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 @endsection
 
 @section('script')
-    <script src="{{ asset('assets/dist/js/pages/dashboard3.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+        const salesCtx = document.getElementById('salesChart');
+        new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($salesMonths) !!},
+                datasets: [{
+                    label: 'Sales',
+                    data: {!! json_encode($salesData) !!},
+                    borderColor: '#36a2eb',
+                    backgroundColor: 'rgba(54,162,235,0.2)',
+                    tension: 0.3
+                }]
+            }
+        });
+
+
+        const pieCtx = document.getElementById('ordersPie');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Pending', 'Processing', 'Shipped', 'Completed', 'Cancelled'],
+                datasets: [{
+                    data: {!! json_encode($ordersStatusData) !!},
+                    backgroundColor: ['#ffcd56','#36a2eb','#4bc0c0','#00c851','#ff4444']
+                }]
+            }
+        });
+    </script>
 @endsection
