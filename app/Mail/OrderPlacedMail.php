@@ -4,10 +4,11 @@ namespace App\Mail;
 
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderPlacedMail extends Mailable
+class OrderPlacedMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -22,7 +23,11 @@ class OrderPlacedMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Thank you for your order')
-            ->markdown('emails.orders.placed');
+        return $this->subject('Your order invoice #' . $this->order->id)
+            ->view('emails.placed')
+            ->with([
+                'order' => $this->order
+            ]);
     }
+
 }

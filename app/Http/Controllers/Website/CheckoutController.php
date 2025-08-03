@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Website;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutRequest;
+use App\Mail\OrderPlacedMail;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Repositories\CartRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -105,6 +107,12 @@ class CheckoutController extends Controller
 
                     $product->decrement('stock', $item['quantity']);
                 }
+
+//                Mail::to($order->customer_email)
+//                    ->queue(new OrderPlacedMail($order));
+                Mail::to('rewantarekhady@gmail.com')
+                    ->queue(new OrderPlacedMail($order));
+
 
                 DB::commit();
                 $this->cartRepo->clear();
