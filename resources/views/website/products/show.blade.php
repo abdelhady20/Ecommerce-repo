@@ -140,7 +140,7 @@
                 <div class="col-lg-7">
                     <div class="product-title">{{ $product->name }}</div>
                     <p class="text-muted mb-1">Category: {{ $product->category?->name }}</p>
-                    <div class="product-price">{{ number_format($product->price, 2) }} EGP</div>
+                    <div class="product-price">{{ number_format($product->price, 2) }} $</div>
                     <div class="product-shortdesc">{{ $product->short_description ?? $product->description }}</div>
 
                     <!-- Wishlist -->

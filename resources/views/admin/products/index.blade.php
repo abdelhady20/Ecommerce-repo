@@ -14,6 +14,13 @@
 
             <div class="card shadow rounded-3 border-0">
                 <div class="card-body table-responsive">
+                    <div class="mb-3">
+                        <span class="text-muted">
+                            Showing page {{ $products->currentPage() }} of {{ $products->lastPage() }}
+                            (Total: {{ $products->total() }} products)
+                        </span>
+                    </div>
+
                     <table class="table table-bordered table-hover align-middle">
                         <thead class="table-light">
                         <tr class="text-center">
@@ -29,7 +36,7 @@
                         <tbody>
                         @forelse($products as $index => $product)
                             <tr class="text-center">
-                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $products->firstItem() + $index }}</td>
                                 <td>{{ $product->name }}</td>
                                 <td>{{ $product->category->name ?? '-' }}</td>
                                 <td>{{ $product->brand->name ?? '-' }}</td>
@@ -53,6 +60,9 @@
                         @endforelse
                         </tbody>
                     </table>
+                    <div class="mt-4">
+                        {{ $products->links('pagination::bootstrap-4', ['class' => 'pagination-sm']) }}
+                    </div>
                 </div>
             </div>
         </div>

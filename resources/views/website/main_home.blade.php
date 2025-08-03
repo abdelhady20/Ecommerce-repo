@@ -23,39 +23,39 @@
             </div>
         </div>
 
-{{--        <!-- Categories Section -->--}}
-{{--        <div class="container categories-section my-5">--}}
-{{--            <h3 class="mb-4 fw-bold" style="color:var(--primary)">Shop by Category</h3>--}}
-{{--            <div class="row g-4">--}}
-{{--                <div class="col-md-4">--}}
-{{--                    <div class="category-card">--}}
-{{--                        <a href="{{ route('website.category.subcategories', 'men') }}">--}}
-{{--                            <img src="{{ asset('assets/images/categories/tm-men1_0001_TM-MEN3.jpg') }}" class="category-img" alt="Men">--}}
-{{--                        </a>--}}
-{{--                        <div class="category-title">Men</div>--}}
-{{--                        <div class="category-desc">Shirts, trousers, shoes & more</div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--                <div class="col-md-4">--}}
-{{--                    <div class="category-card">--}}
-{{--                        <a href="{{ route('website.category.subcategories', 'women') }}">--}}
-{{--                            <img src="{{ asset('assets/images/categories/article4221.jpg') }}" class="category-img" alt="Women">--}}
-{{--                        </a>--}}
-{{--                        <div class="category-title">Women</div>--}}
-{{--                        <div class="category-desc">Dresses, blouses, shoes & more</div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--                <div class="col-md-4">--}}
-{{--                    <div class="category-card">--}}
-{{--                        <a href="{{ route('website.category.subcategories', 'kids') }}">--}}
-{{--                            <img src="{{ asset('assets/images/categories/kids-2-918x1024-1.png') }}" class="category-img" alt="Kids">--}}
-{{--                        </a>--}}
-{{--                        <div class="category-title">Kids</div>--}}
-{{--                        <div class="category-desc">T-shirts, trousers, shoes & more</div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
+        <!-- Categories Section -->
+        <div class="container categories-section my-5">
+            <h3 class="mb-4 fw-bold" style="color:var(--primary)">Shop by Category</h3>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="category-card">
+                        <a href="{{ route('website.category.subcategories', 'men') }}">
+                            <img src="{{ asset('assets/images/categories/tm-men1_0001_TM-MEN3.jpg') }}" class="category-img" alt="Men">
+                        </a>
+                        <div class="category-title">Men</div>
+                        <div class="category-desc">Shirts, trousers, shoes & more</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="category-card">
+                        <a href="{{ route('website.category.subcategories', 'women') }}">
+                            <img src="{{ asset('assets/images/categories/article4221.jpg') }}" class="category-img" alt="Women">
+                        </a>
+                        <div class="category-title">Women</div>
+                        <div class="category-desc">Dresses, blouses, shoes & more</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="category-card">
+                        <a href="{{ route('website.category.subcategories', 'kids') }}">
+                            <img src="{{ asset('assets/images/categories/kids-2-918x1024-1.png') }}" class="category-img" alt="Kids">
+                        </a>
+                        <div class="category-title">Kids</div>
+                        <div class="category-desc">T-shirts, trousers, shoes & more</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- New Arrivals -->
         <div class="container products-section my-5">

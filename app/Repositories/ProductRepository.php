@@ -8,7 +8,9 @@ class ProductRepository implements ProductRepositoryInterface
 {
     public function getAll()
     {
-        return Product::with(['category', 'brand'])->oldest()->get();
+        return Product::with(['category', 'brand'])
+            ->oldest()
+            ->paginate(20);
     }
 
     public function create(array $data): Product
