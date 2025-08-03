@@ -7,6 +7,7 @@ use App\Http\Requests\CheckoutRequest;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Repositories\CartRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
@@ -86,12 +87,23 @@ class CheckoutController extends Controller
                 ]);
 
                 foreach ($cartItems as $item) {
+                    $product =Product::find($item['product_id']);
+
+                    if (!$product || $product->stock < $item['quantity']) {
+                        DB::rollBack();
+                        return redirect()->back()
+                            ->withErrors(['checkout' => "Product '{$item['name']}' is out of stock."]);
+                    }
+
                     OrderItem::create([
                         'order_id'   => $order->id,
                         'product_id' => $item['product_id'],
                         'quantity'   => $item['quantity'],
                         'price'      => $item['unit_price'],
                     ]);
+
+
+                    $product->decrement('stock', $item['quantity']);
                 }
 
                 DB::commit();

@@ -152,15 +152,24 @@
                         </button>
                     </form>
 
-                    <!-- Add to Cart -->
-                    <form action="{{ route('cart.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <input type="hidden" name="quantity" value="1">
-                        <button class="btn btn-primary">
-                            <i class="fa fa-shopping-cart me-2"></i> Add to Cart
+
+                    @if($product->stock > 0)
+                        <form action="{{ route('cart.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button class="btn btn-primary">
+                                <i class="fa fa-shopping-cart me-2"></i> Add to Cart
+                            </button>
+                        </form>
+                    @else
+                        <button class="btn btn-danger" disabled
+                                style="background: #ff0000; border: none; border-radius: 30px; font-weight: 700; padding: 0.6rem 1.6rem; font-size: 1rem;">
+                            <i class="fa fa-times-circle me-2"></i> Out of Stock
                         </button>
-                    </form>
+                    @endif
+
+
 
 
                     <div class="product-details">

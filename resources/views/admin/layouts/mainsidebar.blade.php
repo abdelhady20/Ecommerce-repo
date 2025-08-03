@@ -13,6 +13,12 @@
     <ul class="navbar-nav ml-auto">
 
 
+        <li class="nav-item d-flex align-items-center px-3">
+            <i class="fa fa-user-circle me-2" style="font-size: 1.2rem; color: #eab7b1;"></i>
+            <span style="font-weight: 600; color: #333;">
+        {{ Auth()->user()->name }}
+    </span>
+        </li>
 
         <!-- Fullscreen -->
         <li class="nav-item">
