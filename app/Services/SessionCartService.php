@@ -75,6 +75,18 @@ class SessionCartService
         $cart = $this->get();
 
         if (isset($cart['items'][$itemKey])) {
+            $product = Product::find($cart['items'][$itemKey]['product_id']);
+
+            if (!$product) {
+                session()->flash('error', 'Product not found.');
+                return $cart;
+            }
+
+            if ($product->stock < $quantity) {
+                session()->flash('error', "Only {$product->stock} items available in stock.");
+                return $cart;
+            }
+
             if ($quantity <= 0) {
                 unset($cart['items'][$itemKey]);
             } else {
@@ -85,11 +97,11 @@ class SessionCartService
 
             $this->recalculateSummary($cart);
             $this->save($cart);
-
         }
 
         return $cart;
     }
+
 
 
     public function remove(string $itemKey)
